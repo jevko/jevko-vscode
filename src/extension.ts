@@ -16,6 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.workspace.onDidSaveTextDocument((e) => {
 		let filePath = e.fileName
 		console.log('SAVE', filePath)
+		
 		main({input: filePath})
 
 		console.log('SAVED*****') 
