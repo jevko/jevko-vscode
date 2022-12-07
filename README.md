@@ -1,4 +1,5 @@
 # Jevko Interface
 
-TODO: EDIT
+[EXPERIMENTAL] Jevko interface for Visual Studio Code.
 
+<!-- todo -->
