@@ -1,8 +1,8 @@
-import {jevkoml, jevkocfg, jevkodata, map, prep as prepdata, prettyFromJsonStr, parseJevkoWithHeredocs} from './deps.b.js'
+import {jevkoml, jevkocfg, jevkodata, map, prep as prepdata, prettyFromJsonStr, parseJevkoWithHeredocs} from '../deps.b.js'
 
 import {importDirective} from './importDirective.js'
 
-import {dirname, join, extname, isAbsolute, readTextFileSync, readStdinText, writeTextFileSync, mkdirRecursiveSync} from './deps.js'
+import {dirname, join, extname, isAbsolute, readTextFileSync, readStdinText, writeTextFileSync, mkdirRecursiveSync} from '../nonportable/deps.js'
 
 export const main = async (argmap = {}) => {
   let {format, input} = argmap
