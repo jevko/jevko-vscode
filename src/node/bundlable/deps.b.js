@@ -1467,6 +1467,7 @@ const inner = (jevko)=>{
             if (trimmed.at(-1) === "'") return trimmed.slice(1, -1);
             return trimmed.slice(1);
         }
+        if (trimmed === '') return trimmed;
         if (trimmed === 'true') return true;
         if (trimmed === 'false') return false;
         if (trimmed === 'null' || trimmed === "nil") return null;
@@ -1475,7 +1476,7 @@ const inner = (jevko)=>{
         if (trimmed === 'NaN') return NaN;
         const num = Number(trimmed);
         if (Number.isNaN(num) === false) return num;
-        return suffix;
+        return trimmed;
     }
     if (suffix.trim() !== '') throw Error('oops');
     const sub0 = subjevkos[0];

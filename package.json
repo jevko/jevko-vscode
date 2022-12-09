@@ -8,10 +8,17 @@
     "vscode": "^1.63.0"
   },
   "categories": [
-    "Other"
+    "Other",
+    "Programming Languages"
   ],
   "activationEvents": [
-    "*"
+    "onCommand:jevko.translateCurrentFile",
+    "onCommand:jevko.forceActivate",
+    "onLanguage:jevkodata",
+    "onLanguage:jevkoml",
+    "onLanguage:json",
+    "onLanguage:html",
+    "onLanguage:xml"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -19,9 +26,30 @@
       {
         "command": "jevko.translateCurrentFile",
         "title": "Jevko: translate current file"
+      },
+      {
+        "command": "jevko.forceActivate",
+        "title": "Jevko: force activate extension"
       }
     ]
   },
+  "repository": {
+      "type": "git",
+      "url": "https://codeberg.org/jevko-org/jevko-vscode.git"
+  },
+  "icon": "jevko.png",
+  "galleryBanner": {
+      "color": "#000000",
+      "theme": "dark"
+  },
+  "homepage": "https://jevko.org",
+  "keywords": [
+    "jevko", "interface", "integrated",
+    "markup", "jevkoml", "syntax", "minimal", 
+    "text", "format", "heredoc", "html", "xml",
+    "minimal", "simple", "flexible",
+    "data", "jevkodata", "interchange", "configuration"
+  ],
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",

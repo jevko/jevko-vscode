@@ -32,7 +32,11 @@ export function activate(context: vscode.ExtensionContext) {
 			console.log('SAVED----')
     }
 	});
+	context.subscriptions.push(disposable);
 
+	disposable = vscode.commands.registerCommand('jevko.forceActivate', () => {
+		vscode.window.showInformationMessage('Jevko extension activated!')
+	});
 	context.subscriptions.push(disposable);
 }
 

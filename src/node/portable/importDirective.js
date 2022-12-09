@@ -1,5 +1,5 @@
 import { dirname, join, isAbsolute, readTextFileSync } from "../nonportable/deps.js";
-import {parseJevkoWithHeredocs} from '../deps.b.js'
+import {parseJevkoWithHeredocs} from '../bundlable/deps.b.js'
 
 //?todo: extract to a separate lib
 //?todo: handle via streaming (requires rearchitecting and rewriting the entire jevko cli)

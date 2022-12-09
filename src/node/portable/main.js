@@ -1,4 +1,4 @@
-import {jevkoml, jevkocfg, jevkodata, map, prep as prepdata, prettyFromJsonStr, parseJevkoWithHeredocs} from '../deps.b.js'
+import {jevkoml, jevkocfg, jevkodata, map, prep as prepdata, prettyFromJsonStr, parseJevkoWithHeredocs} from '../bundlable/deps.b.js'
 
 import {importDirective} from './importDirective.js'
 
