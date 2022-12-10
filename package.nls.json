@@ -1,0 +1,4 @@
+{
+  "configuration.jevko.overwrite.ask": "Ask before overwriting.",
+	"configuration.jevko.overwrite.always": "Always overwrite without asking."
+}

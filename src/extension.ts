@@ -8,6 +8,27 @@ import {main} from './node/portable/main.js'
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed 
 export function activate(context: vscode.ExtensionContext) {
+	const defaultOptions = {
+		overwrite: async (path: string) => {
+			const {globalState} = context
+
+			const config = vscode.workspace.getConfiguration('jevko')
+
+			if (config.overwrite === 'always') return true
+	
+			const ans = await vscode.window.showWarningMessage(
+				`File '${path}' exists. Overwrite?`,
+				'Yes', 'Always', 'No'
+			)
+	
+			if (ans === 'Yes') return true
+			else if (ans === 'No') return false
+			else if (ans === 'Always') {
+				config.update('overwrite', 'always')
+				return true
+			}
+		}
+	}
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated 
@@ -17,7 +38,7 @@ export function activate(context: vscode.ExtensionContext) {
 		let filePath = e.fileName
 		console.log('SAVE', filePath)
 
-		main({input: filePath})
+		main({...defaultOptions, input: filePath})
 
 		console.log('SAVED*****') 
 	})
@@ -27,7 +48,14 @@ export function activate(context: vscode.ExtensionContext) {
     if (activeEditor){
 			let filePath = activeEditor.document.uri.fsPath
 
-			main({input: filePath})
+			// todo: combine flags from different option sources
+			main(
+				{
+					...defaultOptions,
+					input: filePath, 
+					flags: ['infer output']
+				}
+			)
 
 			console.log('SAVED----')
     }
@@ -38,6 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Jevko extension activated!')
 	});
 	context.subscriptions.push(disposable);
+
 }
 
 // This method is called when your extension is deactivated

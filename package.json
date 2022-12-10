@@ -32,6 +32,22 @@
         "title": "Jevko: force activate extension"
       }
     ],
+    "configuration": {
+      "title": "Jevko",
+      "id": "jevko",
+      "properties": {
+        "jevko.overwrite": {
+          "type": "string",
+          "enum": ["ask", "always"],
+          "enumDescriptions": [
+            "%configuration.jevko.overwrite.ask%",
+            "%configuration.jevko.overwrite.always%"
+          ],
+          "default": "ask",
+          "description": "Whether to overwrite a file if it already exists."
+        }
+      }
+    },
     "languages": [
       {
         "id": "jevkoml",

@@ -1,4 +1,4 @@
-import {readFileSync, writeFileSync, mkdirSync} from 'node:fs'
+import {readFileSync, writeFileSync, mkdirSync, lstatSync} from 'node:fs'
 
 // todo:  either drop or extract to a jevko-lib and reuse in formats
 
@@ -31,4 +31,14 @@ export const readStdinText = async () => {
 
 export const mkdirRecursiveSync = (path) => {
   mkdirSync(path, {recursive: true})
+}
+
+export const existsSync = path => {
+  try {
+    lstatSync(path)
+    return true
+  } catch (e) {
+    if (e.code === 'ENOENT') return false
+    throw e
+  }
 }

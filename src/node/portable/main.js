@@ -2,7 +2,7 @@ import {jevkoml, jevkocfg, jevkodata, map, prep as prepdata, prettyFromJsonStr, 
 
 import {importDirective} from './importDirective.js'
 
-import {dirname, join, extname, isAbsolute, readTextFileSync, readStdinText, writeTextFileSync, mkdirRecursiveSync} from '../nonportable/deps.js'
+import {dirname, join, extname, basename, isAbsolute, readTextFileSync, readStdinText, writeTextFileSync, mkdirRecursiveSync, existsSync} from '../nonportable/deps.js'
 
 export const main = async (argmap = {}) => {
   let {format, input} = argmap
@@ -64,16 +64,51 @@ export const main = async (argmap = {}) => {
 //?todo: create path if not exists
 const write = (result, options) => {
   //?todo: rename /output to /to file
-  const {output, dir} = options
+  let {output, dir, flags} = options
+
+  // infer output from input
+  if (output === undefined && Array.isArray(flags) && flags.includes('infer output')) {
+    const {input, format} = options
+    if (input !== undefined) {
+      const name = basename(input, extname(input))
+
+      if (format === 'jevkoml') {
+        output = name + '.xml'
+      } else if (format === 'jevkodata') {
+        output = name + '.json'
+      } else if (format === 'json') {
+        output = name + '.jevkodata'
+      }
+    }
+  }
+
+  // a helper fn
+  const commit = (output) => {
+    // ask if overwrite
+    if (existsSync(output)) {
+      const {overwrite} = options
+
+      if (typeof overwrite === 'function') {
+        if (overwrite(output) === false) return
+      } else if (typeof overwrite === 'boolean') {
+        if (overwrite === false) return
+      } else {
+        // note: default overwrite = false
+        throw Error(`File ${output} exists!`)
+      }
+    }
+    mkdirRecursiveSync(dirname(output), {recursive: true})
+    writeTextFileSync(output, result)
+  }
+
+  // todo: console.log makes no sense in vscode interface
   if (output === undefined) console.log(result)
   else {
     if (isAbsolute(output)) {
-      mkdirRecursiveSync(dirname(output), {recursive: true})
-      writeTextFileSync(output, result)
+      commit(output)
     } else {
       const outpath = join(dir, output)
-      mkdirRecursiveSync(dirname(outpath), {recursive: true})
-      writeTextFileSync(outpath, result)
+      commit(outpath)
     }
   }
 }
