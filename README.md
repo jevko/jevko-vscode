@@ -2,6 +2,7 @@
 <img src="jevko.png" width="80" height="80" /><br/>
 <a href="https://jevko.org">jevko.org</a><br/>
 <span>[EXPERIMENTAL]</span>
+<span>[WIP: NOT YET PUBLISHED]</span>
 </p>
 
 ⚠️⚠️⚠️ THIS EXTENSION DEPRECATES AND CONFLICTS WITH: ⚠️⚠️⚠️
@@ -59,19 +60,18 @@ Basic syntax highlighting for .jevkoml that works in Visual Studio Code.
 
 <!-- todo: more accurate description -->
 
-#### .jd -> JSON
+#### .jd -> .json
 
 With this extension, when you save a .jd file, it is automatically converted to and saved as a corresponding JSON file.
 
-#### .jm -> XML/HTML
+#### .jm -> .xml or .html
 
 With this extension, when you save a .jm file, it is automatically converted to and saved as a corresponding XML/HTML file.
 
-### Conversion commands
-
 <!-- todo: implement -->
+<!-- ### Conversion commands
 
-You can convert a JSON file to .jd with the `Jevko: save JSON as JD` command.
+You can convert a JSON file to .jd with the `Jevko: save JSON as JD` command. -->
 
 ## Release Notes
 
