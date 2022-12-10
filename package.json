@@ -1,8 +1,8 @@
 {
   "name": "jevko",
 	"publisher": "jevko",
-  "displayName": "[EXPERIMENTAL] Jevko Interface",
-  "description": "[EXPERIMENTAL] Jevko interface for Visual Studio Code.",
+  "displayName": "Jevko Interface [EXPERIMENTAL]",
+  "description": "Jevko interface for Visual Studio Code. [EXPERIMENTAL]",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.63.0"
@@ -30,6 +30,40 @@
       {
         "command": "jevko.forceActivate",
         "title": "Jevko: force activate extension"
+      }
+    ],
+    "languages": [
+      {
+        "id": "jevkoml",
+        "aliases": ["jevkoml"],
+        "extensions": [".jevkoml", ".jvkml", ".jvkm", ".jm"],
+        "firstLine": "#!/usr/bin/env -S jevko format \\[jevkoml\\]",
+        "configuration": "./language-configuration.json",
+        "icon": {
+            "dark": "jevkoml.png",
+            "light": "jevkoml.png"
+        }
+      }, {
+        "id": "jevkodata",
+        "aliases": ["jevkodata"],
+        "extensions": [".jevkodata", ".jevkocfg", ".jd", ".jc"],
+        "firstLine": "#!/usr/bin/env -S jevko format \\[jevkodata\\]",
+        "configuration": "./language-configuration.json",
+        "icon": {
+            "dark": "jevkodata.png",
+            "light": "jevkodata.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "jevkoml",
+        "scopeName": "source.jevkoml",
+        "path": "./syntaxes/jevkoml.tmLanguage.json"
+      }, {
+        "language": "jevkodata",
+        "scopeName": "source.jevkodata",
+        "path": "./syntaxes/jevkodata.tmLanguage.json"
       }
     ]
   },

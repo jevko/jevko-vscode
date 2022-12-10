@@ -1,0 +1,324 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "jevkodata",
+  "patterns": [
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#disabled"
+    },
+    {
+      "include": "#disabled-heredoc"
+    },
+    {
+      "include": "#directive"
+    },
+    {
+      "include": "#key"
+    },
+    {
+      "include": "#qstring"
+    },
+    {
+      "include": "#keyword"
+    },
+    {
+      "include": "#heredoc"
+    },
+    {
+      "include": "#number"
+    }
+  ],
+  "repository": {
+    "number": {
+      "match": "(?x)\n      (?<=\\[)\\s*\n      # regex for a number according to JSON spec:\n      -?\n      (?:0|[1-9]\\d*)\n      (?:\n        (?:\\.\\d+)?\n        (?:[eE][+-]?\\d+)?\n      )?\n      # end of JSON number regex\n      \\s*(?=\\])\n    ",
+      "name": "constant.numeric.jevkodata"
+    },
+    "digraph": {
+      "match": "`[`\\[\\]]",
+      "name": "constant.character.escape.jevkodata"
+    },
+    "digraph2": {
+      "match": "`[`\\[\\]]",
+      "name": "string.regexp.jevkodata"
+    },
+    "disabled": {
+      "name": "comment.jevkodata",
+      "begin": "\\s*(\\\\)?-((`[`\\[\\]])|[^`\\[\\]])*\\[",
+      "end": "\\]",
+      "patterns": [
+        {
+          "include": "#brackets-disabled"
+        }
+      ]
+    },
+    "disabled-heredoc": {
+      "name": "comment.jevkoml",
+      "begin": "\\s*(?:\\\\)?-(?:(?:`[`\\[\\]])|[^`\\[\\]])*`/([^/]*)/",
+      "end": "/\\1/"
+    },
+    "brackets-disabled": {
+      "name": "comment.jevkodata",
+      "begin": "\\[",
+      "end": "\\]",
+      "patterns": [
+        {
+          "include": "#brackets-disabled"
+        }
+      ]
+    },
+    "text": {
+      "name": "keyword.jevkodata",
+      "begin": "(?=(\\\\|^)((`[`\\[\\]])|[^`\\[\\]])+\\\\)",
+      "end": "(?=\\\\|$)",
+      "patterns": [
+        {
+          "include": "#digraph2"
+        }
+      ]
+    },
+    "keyword": {
+      "name": "keyword.other.jevkodata",
+      "match": "\\b(true|false|null|nil|seq|list|map)\\b"
+    },
+    "qstring": {
+      "name": "string.quoted.jevkodata",
+      "begin": "'",
+      "end": "'?\\s*(?=[\\[\\]])",
+      "patterns": [
+        {
+          "include": "#digraph2"
+        }
+      ]
+    },
+    "comment": {
+      "name": "comment.jevkodata",
+      "begin": "(?=\\s*(((`[`\\[\\]])|[^`\\[\\]\\\\])+)[^\\[\\]`]$)",
+      "end": "(?=$)",
+      "patterns": [
+        {
+          "include": "#digraph2"
+        }
+      ]
+    },
+    "directive": {
+      "name": "keyword.control.jevkodata",
+      "begin": "(?=\\s*((\\\\)?/((`[`\\[\\]])|[^`\\[\\]\\\\])+|\\\\)(\\[|`/))",
+      "end": "(?=(\\[|`/))",
+      "patterns": [
+        {
+          "include": "#digraph2"
+        }
+      ]
+    },
+    "key": {
+      "name": "entity.other.attribute-name",
+      "begin": "(?=(((`[`\\[\\]])|[^`\\[\\]\\\\])+)(\\[|`/))",
+      "end": "(?=(\\[|`/))",
+      "patterns": [
+        {
+          "include": "#digraph2"
+        }
+      ]
+    },
+    "prefix": {
+      "name": "keyword.jevkodata",
+      "begin": "(?=((`[`\\[\\]])|[^`\\[\\]])+\\[)",
+      "end": "(?=\\[)",
+      "patterns": [
+        {
+          "include": "#digraph2"
+        }
+      ]
+    },
+    "suffix": {
+      "name": "string.jevkodata",
+      "begin": "(?=((`[`\\[\\]])|[^`\\[\\]])+([^\\[]))",
+      "end": "(?=\\3)",
+      "patterns": [
+        {
+          "include": "#digraph"
+        }
+      ]
+    },
+    "heredoc": {
+      "patterns": [
+        {
+          "include": "#heredoc_json"
+        },
+        {
+          "include": "#heredoc_xml"
+        },
+        {
+          "include": "#heredoc_html"
+        },
+        {
+          "include": "#heredoc_css"
+        },
+        {
+          "include": "#heredoc_ini"
+        },
+        {
+          "include": "#heredoc_yaml"
+        },
+        {
+          "include": "#heredoc_toml"
+        },
+        {
+          "include": "#heredoc_default"
+        }
+      ]
+    },
+    "heredoc_default": {
+      "begin": "`/([^/]*)/",
+      "end": "/\\1/",
+      "name": "string.jevko",
+      "beginCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      }
+    },
+    "heredoc_json": {
+      "begin": "`/(json|json5|sublime-settings|sublime-menu|sublime-keymap|sublime-mousemap|sublime-theme|sublime-build|sublime-project|sublime-completions)/",
+      "end": "/\\1/",
+      "beginCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.json"
+        }
+      ]
+    },
+    "heredoc_xml": {
+      "begin": "`/(xml|xsd|tld|jsp|pt|cpt|dtml|rss|opml)/",
+      "end": "/\\1/",
+      "beginCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "patterns": [
+        {
+          "include": "text.xml"
+        }
+      ]
+    },
+    "heredoc_html": {
+      "begin": "`/(html|htm|shtml|xhtml|inc|tmpl|tpl)/",
+      "end": "/\\1/",
+      "beginCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "patterns": [
+        {
+          "include": "text.html.basic"
+        }
+      ]
+    },
+    "heredoc_css": {
+      "begin": "`/(css)/",
+      "end": "/\\1/",
+      "name": "meta.embedded.block.css",
+      "beginCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.css"
+        }
+      ]
+    },
+    "heredoc_ini": {
+      "begin": "`/(ini|conf)/",
+      "end": "/\\1/",
+      "beginCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.ini"
+        }
+      ]
+    },
+    "heredoc_yaml": {
+      "begin": "`/(yaml|yml)/",
+      "end": "/\\1/",
+      "beginCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.yaml"
+        }
+      ]
+    },
+    "heredoc_toml": {
+      "begin": "`/(toml)/",
+      "end": "/\\1/",
+      "beginCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.toml"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.jevkodata"
+}

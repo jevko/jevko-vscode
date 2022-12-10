@@ -2,6 +2,6 @@
 
 All notable changes to the "jevko" extension will be documented in this file.
 
-## [Unreleased]
+## 0.0.1
 
-- Initial release
+Initial version.
