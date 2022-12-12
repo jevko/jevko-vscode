@@ -1,7 +1,7 @@
 [
   version [0.2.1]
   output [jevkodata.tmLanguage.json]
-  flags [[pretty]]
+  pretty [true]
 ]
 todo: perhaps share common part between jevkoml and jevkodata
 

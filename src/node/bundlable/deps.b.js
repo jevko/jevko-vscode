@@ -1419,7 +1419,7 @@ const recur1 = (jevko, indent, prevIndent)=>{
 };
 const prettyFromJsonStr = (str)=>jevkoToPrettyString(jevkoFromString(fromJsonStr(str)));
 const jevkodata = (jevko, props)=>{
-    if (Array.isArray(props.flags) && props.flags.includes('pretty')) {
+    if (props.pretty === true || Array.isArray(props.flags) && props.flags.includes('pretty')) {
         return JSON.stringify(convert(jevko), null, 2);
     }
     return JSON.stringify(convert(jevko));

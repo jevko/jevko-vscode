@@ -68,10 +68,10 @@ export const main = async (argmap = {}) => {
 //?todo: create path if not exists
 const write = (result, options) => {
   //?todo: rename /output to /to file
-  let {output, dir, flags} = options
+  let {output, dir} = options
 
   // infer output from input
-  if (output === undefined && Array.isArray(flags) && flags.includes('infer output')) {
+  if (output === undefined && options['infer output'] === true) {
     const {input, format} = options
     if (input !== undefined) {
       const name = basename(input, extname(input))

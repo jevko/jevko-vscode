@@ -1,6 +1,6 @@
 [
   output [package.json]
-  flags [[pretty]]
+  pretty [true]
 ]
 name `''jevko''
 publisher `''jevko''

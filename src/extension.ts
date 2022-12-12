@@ -51,12 +51,11 @@ export function activate(context: vscode.ExtensionContext) {
     if (activeEditor){
 			let filePath = activeEditor.document.uri.fsPath
 
-			// todo: combine flags from different option sources
 			main(
 				{
 					...defaultOptions,
 					input: filePath, 
-					flags: ['infer output']
+					'infer output': true,
 				}
 			)
 
