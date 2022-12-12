@@ -10,24 +10,27 @@ import {main} from './node/portable/main.js'
 export function activate(context: vscode.ExtensionContext) {
 	const defaultOptions = {
 		overwrite: async (path: string) => {
-			const {globalState} = context
-
 			const config = vscode.workspace.getConfiguration('jevko')
-
+			
 			if (config.overwrite === 'always') return true
 	
 			const ans = await vscode.window.showWarningMessage(
 				`File '${path}' exists. Overwrite?`,
 				'Yes', 'Always', 'No'
 			)
-	
-			if (ans === 'Yes') return true
-			else if (ans === 'No') return false
+
+			if (ans === 'Yes') {
+				return true
+			}
 			else if (ans === 'Always') {
 				config.update('overwrite', 'always')
 				return true
 			}
-		}
+			// if (ans === 'No' || ans === undefined)
+			return false
+		},
+		"storage dir": context.globalStoragePath,
+		platform: "node",
 	}
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)

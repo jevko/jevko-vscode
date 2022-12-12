@@ -1,6 +1,6 @@
 {
   "name": "jevko",
-	"publisher": "jevko",
+  "publisher": "jevko",
   "displayName": "Jevko Interface [EXPERIMENTAL]",
   "description": "Jevko interface for Visual Studio Code. [EXPERIMENTAL]",
   "version": "0.0.1",
@@ -38,7 +38,10 @@
       "properties": {
         "jevko.overwrite": {
           "type": "string",
-          "enum": ["ask", "always"],
+          "enum": [
+            "ask",
+            "always"
+          ],
           "enumDescriptions": [
             "%configuration.jevko.overwrite.ask%",
             "%configuration.jevko.overwrite.always%"
@@ -51,23 +54,38 @@
     "languages": [
       {
         "id": "jevkoml",
-        "aliases": ["jevkoml"],
-        "extensions": [".jevkoml", ".jvkml", ".jvkm", ".jm"],
-        "firstLine": "#!/usr/bin/env -S jevko format \\[jevkoml\\]",
+        "aliases": [
+          "jevkoml"
+        ],
+        "extensions": [
+          ".jevkoml",
+          ".jvkml",
+          ".jvkm",
+          ".jm"
+        ],
+        "firstLine": ".*format\\s*\\[\\s*jevkoml\\s*\\].*",
         "configuration": "./language-configuration.json",
         "icon": {
-            "dark": "jevkoml.png",
-            "light": "jevkoml.png"
+          "dark": "jevkoml.png",
+          "light": "jevkoml.png"
         }
-      }, {
+      },
+      {
         "id": "jevkodata",
-        "aliases": ["jevkodata"],
-        "extensions": [".jevkodata", ".jevkocfg", ".jd", ".jc"],
-        "firstLine": "#!/usr/bin/env -S jevko format \\[jevkodata\\]",
+        "aliases": [
+          "jevkodata"
+        ],
+        "extensions": [
+          ".jevkodata",
+          ".jevkocfg",
+          ".jd",
+          ".jc"
+        ],
+        "firstLine": ".*\\bformat\\s*\\[\\s*jevkodata\\s*\\].*",
         "configuration": "./language-configuration.json",
         "icon": {
-            "dark": "jevkodata.png",
-            "light": "jevkodata.png"
+          "dark": "jevkodata.png",
+          "light": "jevkodata.png"
         }
       }
     ],
@@ -76,7 +94,8 @@
         "language": "jevkoml",
         "scopeName": "source.jevkoml",
         "path": "./syntaxes/jevkoml.tmLanguage.json"
-      }, {
+      },
+      {
         "language": "jevkodata",
         "scopeName": "source.jevkodata",
         "path": "./syntaxes/jevkodata.tmLanguage.json"
@@ -84,21 +103,35 @@
     ]
   },
   "repository": {
-      "type": "git",
-      "url": "https://codeberg.org/jevko-org/jevko-vscode.git"
+    "type": "git",
+    "url": "https://codeberg.org/jevko-org/jevko-vscode.git"
   },
   "icon": "jevko.png",
   "galleryBanner": {
-      "color": "#000000",
-      "theme": "dark"
+    "color": "#000000",
+    "theme": "dark"
   },
   "homepage": "https://jevko.org",
   "keywords": [
-    "jevko", "interface", "integrated",
-    "markup", "jevkoml", "syntax", "minimal", 
-    "text", "format", "heredoc", "html", "xml",
-    "minimal", "simple", "flexible",
-    "data", "jevkodata", "interchange", "configuration"
+    "jevko",
+    "interface",
+    "integrated",
+    "markup",
+    "jevkoml",
+    "syntax",
+    "minimal",
+    "text",
+    "format",
+    "heredoc",
+    "html",
+    "xml",
+    "minimal",
+    "simple",
+    "flexible",
+    "data",
+    "jevkodata",
+    "interchange",
+    "configuration"
   ],
   "scripts": {
     "vscode:prepublish": "npm run compile",
