@@ -4,6 +4,10 @@ import {importDirective} from './importDirective.js'
 
 import {dirname, join, extname, basename, isAbsolute, readTextFileSync, readStdinText, writeTextFileSync, mkdirRecursiveSync, existsSync} from '../nonportable/deps.js'
 
+const defaultOptions = {
+  platform: 'deno'
+}
+
 export const main = async (argmap = {}) => {
   let {format, input} = argmap
   // todo: exactly 1?
@@ -24,22 +28,22 @@ export const main = async (argmap = {}) => {
     argmap.dir = '.'
   }
   
+  // todo: don't parse as jevko if format is json/xml, etc. (non-jevko)
   if (argmap.format === 'json') {
     const result = prettyFromJsonStr(source)
     write(result, argmap)
     return
   }
-  
-  // todo: don't parse as jevko if format is json/xml, etc. (non-jevko)
-  const jevko = parseJevkoWithHeredocs(source)
-  
-  const {jevko: preppedJevko1, props} = prep(jevko)
 
-  const options = Object.assign(props, argmap)
+  const {options: opts, source: src} = extractOptions(source)
+
+  const options = Object.assign({}, defaultOptions, opts, argmap)
   {
+    const jevko = parseJevkoWithHeredocs(src)
+
     // resolve imports
     // note: could be made optional
-    const preppedJevko = importDirective(preppedJevko1, options)
+    const preppedJevko = importDirective(jevko, options)
     const {format} = options
     // if (format !== undefined) {
     //   const f = options.format
@@ -83,13 +87,15 @@ const write = (result, options) => {
   }
 
   // a helper fn
-  const commit = (output) => {
+  const commit = async (output) => {
     // ask if overwrite
     if (existsSync(output)) {
       const {overwrite} = options
 
       if (typeof overwrite === 'function') {
-        if (overwrite(output) === false) return
+        if (await overwrite(output) === false) {
+          return
+        }
       } else if (typeof overwrite === 'boolean') {
         if (overwrite === false) return
       } else {
@@ -122,29 +128,36 @@ const withoutShebang = source => {
   return source
 }
 
-const prep = jevko => {
-  const {subjevkos, ...rest} = jevko
+const extractOptions = source => {
+  let depth = 0, a = 0
+  for (let i = 0; i < source.length; ++i) {
+    const c = source[i]
+    if (c === '[') {
+      if (depth === 0) {
+        if (source.slice(0, i).trim() !== '') return {
+          options: Object.create(null),
+          source,
+        }
+        a = i + 1
+      }
+      ++depth
+    } else if (c === ']') {
+      if (depth === 0) throw Error(`Unbalanced ] while parsing options!`)
+      --depth
+      if (depth === 0) {
+        const optionsText = source.slice(a, i)
+        const optionsJevko = parseJevkoWithHeredocs(optionsText)
 
-  let subs
-  let props = Object.create(null)
-  if (subjevkos.length > 0) {
-    const sub0 = subjevkos[0]
-    const pref = sub0.prefix
+        const xyz = prepdata(optionsJevko)
+        const options = map(xyz.subjevkos)
 
-    if (pref.trim() === '') {
-      // interpret top-level directives
-      const tjevko = sub0.jevko
-      const xyz = prepdata(tjevko)
-      props = map(xyz.subjevkos)
-
-      subs = subjevkos.slice(1)
-    } else subs = subjevkos
-  } else {
-    subs = []
+        return {
+          options,
+          source: source.slice(i + 1)
+        }
+      }
+    }
   }
-
-  return {
-    jevko: {subjevkos: subs, ...rest},
-    props,
-  }
+  if (depth > 0) throw Error(`Error while parsing options: unexpected end before ${depth} brackets closed!`)
+  throw Error(`Error while parsing options!`)
 }

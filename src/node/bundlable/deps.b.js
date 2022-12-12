@@ -2,53 +2,84 @@
 // deno-lint-ignore-file
 // This code was bundled using `deno bundle` and it's not recommended to edit it manually
 
-const parseJevkoWithHeredocs = (str, { opener ='[' , closer =']' , escaper ='`' , blocker ='/'  } = {})=>{
-    if (new Set([
+const defaultOpener = '[';
+const defaultCloser = ']';
+const defaultEscaper = '`';
+const defaultQuoter = "'";
+const defaultDelimiters = {
+    opener: defaultOpener,
+    closer: defaultCloser,
+    escaper: defaultEscaper,
+    quoter: defaultQuoter
+};
+const normalizeDelimiters = (delims)=>{
+    const { opener =defaultOpener , closer =defaultCloser , escaper =defaultEscaper , quoter =defaultQuoter  } = delims ?? {};
+    const delimiters = [
         opener,
         closer,
         escaper,
-        blocker
-    ]).size !== 4) throw Error('oops');
+        quoter
+    ];
+    const delimiterSetSize = new Set(delimiters).size;
+    if (delimiterSetSize !== delimiters.length) {
+        throw Error(`Delimiters must be unique! ${delimiters.length - delimiterSetSize} of them are identical:\n${delimiters.join('\n')}`);
+    }
+    return {
+        opener,
+        closer,
+        escaper,
+        quoter
+    };
+};
+const jevkoFromString = (str, delimiters)=>{
+    const { opener , closer , escaper , quoter  } = normalizeDelimiters(delimiters);
     const parents = [];
     let parent = {
         subjevkos: []
     }, prefix = '', h = 0, mode = 'normal';
     let line = 1, column = 1;
     let tag = '', t = 0;
+    let sawFirstQuoter = false;
     for(let i = 0; i < str.length; ++i){
         const c = str[i];
         if (mode === 'escaped') {
             if (c === escaper || c === opener || c === closer) mode = 'normal';
-            else if (c === blocker) {
+            else if (c === quoter) {
                 mode = 'tag';
                 t = i + 1;
             } else throw SyntaxError(`Invalid digraph (${escaper}${c}) at ${line}:${column}!`);
         } else if (mode === 'tag') {
-            if (c === blocker) {
+            if (c === quoter) {
                 tag = str.slice(t, i);
                 h = i + 1;
                 t = h;
-                mode = 'block';
+                mode = 'heredoc';
             }
-        } else if (mode === 'block') {
-            if (c === blocker) {
-                const found = str.slice(h, i);
-                if (found === tag) {
-                    const jevko = {
-                        subjevkos: [],
-                        suffix: str.slice(t, h - 1),
-                        tag
-                    };
-                    parent.subjevkos.push({
-                        prefix,
-                        jevko
-                    });
-                    prefix = '';
+        } else if (mode === 'heredoc') {
+            if (c === quoter) {
+                if (sawFirstQuoter === false) {
                     h = i + 1;
-                    tag = '';
-                    mode = 'normal';
+                    sawFirstQuoter = true;
                 } else {
-                    h = i + 1;
+                    const found = str.slice(h, i);
+                    if (found === tag) {
+                        const jevko = {
+                            subjevkos: [],
+                            suffix: str.slice(t, h - 1),
+                            tag
+                        };
+                        parent.subjevkos.push({
+                            prefix,
+                            jevko
+                        });
+                        prefix = '';
+                        h = i + 1;
+                        tag = '';
+                        mode = 'normal';
+                        sawFirstQuoter = false;
+                    } else {
+                        h = i + 1;
+                    }
                 }
             }
         } else if (c === escaper) {
@@ -82,15 +113,47 @@ const parseJevkoWithHeredocs = (str, { opener ='[' , closer =']' , escaper ='`' 
         }
     }
     if (mode === 'escaped') throw SyntaxError(`Unexpected end after escaper (${escaper})!`);
-    if (mode === 'tag') throw SyntaxError(`Unexpected end after blocker (${blocker})!`);
-    if (mode === 'block') throw SyntaxError(`Unexpected end after blocker (${blocker})!`);
+    if (mode === 'tag') throw SyntaxError(`Unexpected end after quoter (${quoter})!`);
+    if (mode === 'heredoc' || mode === 'heredoc0') throw SyntaxError(`Unexpected end after quoter (${quoter})!`);
     if (parents.length > 0) throw SyntaxError(`Unexpected end: missing ${parents.length} closer(s) (${closer})!`);
     parent.suffix = prefix + str.slice(h);
     parent.opener = opener;
     parent.closer = closer;
     parent.escaper = escaper;
-    parent.blocker = blocker;
+    parent.quoter = quoter;
     return parent;
+};
+const escape = (str, { opener =defaultOpener , closer =defaultCloser , escaper =defaultEscaper  } = {})=>{
+    let ret = '';
+    for (const c of str){
+        if (c === opener || c === closer || c === escaper) ret += escaper;
+        ret += c;
+    }
+    return ret;
+};
+const recur = (jevko, delimiters)=>{
+    const { subjevkos , suffix , tag  } = jevko;
+    if (tag !== undefined) {
+        return stringToHeredoc(suffix, tag, delimiters);
+    }
+    let ret = '';
+    for (const { prefix , jevko: jevko1  } of subjevkos){
+        ret += `${escape(prefix, delimiters)}${recur(jevko1, delimiters)}`;
+    }
+    return delimiters.opener + ret + escape(suffix, delimiters) + delimiters.closer;
+};
+const stringToHeredoc = (str, tag, delimiters)=>{
+    const { quoter: q  } = delimiters;
+    let id = tag;
+    let tok = `${q}${tag}${q}`;
+    let stret = `${str}${tok}`;
+    const pad = q === '=' ? '-' : '=';
+    while(stret.indexOf(tok) !== str.length){
+        id += pad;
+        tok = `${q}${id}${q}`;
+        stret = `${str}${tok}`;
+    }
+    return `${delimiters.escaper}${tok}${stret}`;
 };
 class DenoStdInternalError extends Error {
     constructor(message){
@@ -520,7 +583,7 @@ const ctx = new Map([
     ]
 ]);
 const parseHtmlJevko = (source, dir = '.')=>{
-    return prep(parseJevkoWithHeredocs(source), dir);
+    return prep(jevkoFromString(source), dir);
 };
 const jevkoml = async (preppedjevko, options)=>{
     const { dir , root , prepend  } = options;
@@ -1270,81 +1333,8 @@ const JsonHigh = (next)=>{
     };
     return self;
 };
-const escape = (str)=>{
-    let ret = '';
-    for (const c of str){
-        if (c === '[' || c === ']' || c === '`') ret += '`';
-        ret += c;
-    }
-    return ret;
-};
-const escapePrefix = (prefix)=>prefix === '' ? '' : escape(prefix) + ' ';
-const recur = (jevko, indent, prevIndent)=>{
-    const { subjevkos , suffix  } = jevko;
-    let ret = '';
-    if (subjevkos.length > 0) {
-        ret += '\n';
-        for (const { prefix , jevko: jevko1  } of subjevkos){
-            ret += `${indent}${escapePrefix(prefix)}[${recur(jevko1, indent + '  ', indent)}]\n`;
-        }
-        ret += prevIndent;
-    }
-    return ret + escape(suffix);
-};
-const argsToJevko = (...args)=>{
-    const subjevkos = [];
-    let subjevko = {
-        prefix: ''
-    };
-    for(let i = 0; i < args.length; ++i){
-        const arg = args[i];
-        if (Array.isArray(arg)) {
-            subjevko.jevko = argsToJevko(...arg);
-            subjevkos.push(subjevko);
-            subjevko = {
-                prefix: ''
-            };
-        } else if (typeof arg === 'string') {
-            subjevko.prefix += arg;
-        } else throw Error(`Argument #${i} has unrecognized type (${typeof arg})! Only strings and arrays are allowed. The argument's value is: ${arg}`);
-    }
-    return {
-        subjevkos,
-        suffix: subjevko.prefix
-    };
-};
-const escapePrefix1 = (prefix)=>prefix === '' ? '' : prefix + ' ';
-const recur1 = (jevko, indent, prevIndent)=>{
-    const { subjevkos , suffix  } = jevko;
-    let ret = [];
-    if (subjevkos.length > 0) {
-        ret.push('\n');
-        for (const { prefix , jevko: jevko1  } of subjevkos){
-            ret.push(indent, escapePrefix1(prefix), recur1(jevko1, indent + '  ', indent), '\n');
-        }
-        ret.push(prevIndent);
-    }
-    ret.push(suffix);
-    return ret;
-};
-const jevkoToString = (jevko)=>{
-    const { subjevkos , suffix  } = jevko;
-    let ret = '';
-    for (const { prefix , jevko: jevko1  } of subjevkos){
-        ret += `${escape(prefix)}[${jevkoToString(jevko1)}]`;
-    }
-    return ret + escape(suffix);
-};
-const stringToHeredoc = (str)=>{
-    let id = '';
-    let tok = '//';
-    let stret = `${str}${tok}`;
-    while(stret.indexOf(tok) !== str.length){
-        id += '=';
-        tok = `/${id}/`;
-        stret = `${str}${tok}`;
-    }
-    return `\`${tok}${stret}`;
+const stringToHeredoc1 = (str)=>{
+    return stringToHeredoc(str, '', defaultDelimiters);
 };
 const convertKey = (key)=>convertString(key);
 const convertString = (str)=>{
@@ -1352,11 +1342,12 @@ const convertString = (str)=>{
     if (str.trim() !== str) return `'${escaped}'`;
     return escaped;
 };
+const { opener , closer  } = defaultDelimiters;
 const convertValue = (value)=>{
     if (typeof value === 'string') {
-        return stringToHeredoc(value);
+        return stringToHeredoc1(value);
     }
-    return `[${value}]`;
+    return opener + value + closer;
 };
 const makeStream = (write)=>{
     let isEmpty = false;
@@ -1364,24 +1355,24 @@ const makeStream = (write)=>{
     const stream = JsonHigh({
         openArray: ()=>{
             isEmpty = true;
-            if (depth > 0) write('[');
+            if (depth > 0) write(opener);
             ++depth;
         },
         openObject: ()=>{
             isEmpty = true;
-            if (depth > 0) write('[');
+            if (depth > 0) write(opener);
             ++depth;
         },
         closeArray: ()=>{
             if (isEmpty) write('seq');
             --depth;
-            if (depth > 0) write(']');
+            if (depth > 0) write(closer);
             isEmpty = false;
         },
         closeObject: ()=>{
             if (isEmpty) write('map');
             --depth;
-            if (depth > 0) write(']');
+            if (depth > 0) write(closer);
             isEmpty = false;
         },
         key: (key)=>{
@@ -1401,31 +1392,32 @@ const fromJsonStr = (str)=>{
     stream.end();
     return ret;
 };
-const strToHeredoc = (str, tag)=>`\`/${tag}/${str}/${tag}/`;
+const { opener: opener1 , closer: closer1 , escaper , quoter  } = defaultDelimiters;
+const strToHeredoc = (str, tag)=>`${escaper}${quoter}${tag}${quoter}${str}${quoter}${tag}${quoter}`;
 const jevkoToPrettyString = (jevko)=>{
     const { subjevkos , suffix , tag  } = jevko;
     if (tag !== undefined) return strToHeredoc(suffix, tag);
     let ret = '';
     for (const { prefix , jevko: jevko1  } of subjevkos){
-        ret += `${escapePrefix2(prefix)}${recur2(jevko1, '  ', '')}\n`;
+        ret += `${escapePrefix(prefix)}${recur1(jevko1, '  ', '')}\n`;
     }
     return ret + escape(suffix);
 };
-const escapePrefix2 = (prefix)=>prefix === '' ? '' : escape(prefix) + ' ';
-const recur2 = (jevko, indent, prevIndent)=>{
+const escapePrefix = (prefix)=>prefix === '' ? '' : escape(prefix) + ' ';
+const recur1 = (jevko, indent, prevIndent)=>{
     const { subjevkos , suffix , tag  } = jevko;
     if (tag !== undefined) return strToHeredoc(suffix, tag);
     let ret = '';
     if (subjevkos.length > 0) {
         ret += '\n';
         for (const { prefix , jevko: jevko1  } of subjevkos){
-            ret += `${indent}${escapePrefix2(prefix)}${recur2(jevko1, indent + '  ', indent)}\n`;
+            ret += `${indent}${escapePrefix(prefix)}${recur1(jevko1, indent + '  ', indent)}\n`;
         }
         ret += prevIndent;
     }
-    return '[' + ret + escape(suffix) + ']';
+    return opener1 + ret + escape(suffix) + closer1;
 };
-const prettyFromJsonStr = (str)=>jevkoToPrettyString(parseJevkoWithHeredocs(fromJsonStr(str)));
+const prettyFromJsonStr = (str)=>jevkoToPrettyString(jevkoFromString(fromJsonStr(str)));
 const jevkodata = (jevko, props)=>{
     if (Array.isArray(props.flags) && props.flags.includes('pretty')) {
         return JSON.stringify(convert(jevko), null, 2);
@@ -1478,7 +1470,7 @@ const inner = (jevko)=>{
         if (Number.isNaN(num) === false) return num;
         return trimmed;
     }
-    if (suffix.trim() !== '') throw Error('oops');
+    if (suffix.trim() !== '') throw Error(`Expected blank suffix, was: ${suffix}`);
     const sub0 = subjevkos[0];
     if (sub0.prefix === '') return list(subjevkos);
     return map(subjevkos);
@@ -1626,53 +1618,78 @@ const map1 = (subjevkos)=>{
 const jevkocfg = (jevko)=>{
     return JSON.stringify(convert1(jevko));
 };
-const parseJevkoWithHeredocs1 = (str, { opener ='[' , closer =']' , escaper ='`' , blocker ='/'  } = {})=>{
-    if (new Set([
+const defaultOpener1 = '[';
+const defaultCloser1 = ']';
+const defaultEscaper1 = '`';
+const defaultQuoter1 = "'";
+const normalizeDelimiters1 = (delims)=>{
+    const { opener =defaultOpener1 , closer =defaultCloser1 , escaper =defaultEscaper1 , quoter =defaultQuoter1  } = delims ?? {};
+    const delimiters = [
         opener,
         closer,
         escaper,
-        blocker
-    ]).size !== 4) throw Error('oops');
+        quoter
+    ];
+    const delimiterSetSize = new Set(delimiters).size;
+    if (delimiterSetSize !== delimiters.length) {
+        throw Error(`Delimiters must be unique! ${delimiters.length - delimiterSetSize} of them are identical:\n${delimiters.join('\n')}`);
+    }
+    return {
+        opener,
+        closer,
+        escaper,
+        quoter
+    };
+};
+const jevkoFromString1 = (str, delimiters)=>{
+    const { opener , closer , escaper , quoter  } = normalizeDelimiters1(delimiters);
     const parents = [];
     let parent = {
         subjevkos: []
     }, prefix = '', h = 0, mode = 'normal';
     let line = 1, column = 1;
     let tag = '', t = 0;
+    let sawFirstQuoter = false;
     for(let i = 0; i < str.length; ++i){
         const c = str[i];
         if (mode === 'escaped') {
             if (c === escaper || c === opener || c === closer) mode = 'normal';
-            else if (c === blocker) {
+            else if (c === quoter) {
                 mode = 'tag';
                 t = i + 1;
             } else throw SyntaxError(`Invalid digraph (${escaper}${c}) at ${line}:${column}!`);
         } else if (mode === 'tag') {
-            if (c === blocker) {
+            if (c === quoter) {
                 tag = str.slice(t, i);
                 h = i + 1;
                 t = h;
-                mode = 'block';
+                mode = 'heredoc';
             }
-        } else if (mode === 'block') {
-            if (c === blocker) {
-                const found = str.slice(h, i);
-                if (found === tag) {
-                    const jevko = {
-                        subjevkos: [],
-                        suffix: str.slice(t, h - 1),
-                        tag
-                    };
-                    parent.subjevkos.push({
-                        prefix,
-                        jevko
-                    });
-                    prefix = '';
+        } else if (mode === 'heredoc') {
+            if (c === quoter) {
+                if (sawFirstQuoter === false) {
                     h = i + 1;
-                    tag = '';
-                    mode = 'normal';
+                    sawFirstQuoter = true;
                 } else {
-                    h = i + 1;
+                    const found = str.slice(h, i);
+                    if (found === tag) {
+                        const jevko = {
+                            subjevkos: [],
+                            suffix: str.slice(t, h - 1),
+                            tag
+                        };
+                        parent.subjevkos.push({
+                            prefix,
+                            jevko
+                        });
+                        prefix = '';
+                        h = i + 1;
+                        tag = '';
+                        mode = 'normal';
+                        sawFirstQuoter = false;
+                    } else {
+                        h = i + 1;
+                    }
                 }
             }
         } else if (c === escaper) {
@@ -1706,17 +1723,49 @@ const parseJevkoWithHeredocs1 = (str, { opener ='[' , closer =']' , escaper ='`'
         }
     }
     if (mode === 'escaped') throw SyntaxError(`Unexpected end after escaper (${escaper})!`);
-    if (mode === 'tag') throw SyntaxError(`Unexpected end after blocker (${blocker})!`);
-    if (mode === 'block') throw SyntaxError(`Unexpected end after blocker (${blocker})!`);
+    if (mode === 'tag') throw SyntaxError(`Unexpected end after quoter (${quoter})!`);
+    if (mode === 'heredoc' || mode === 'heredoc0') throw SyntaxError(`Unexpected end after quoter (${quoter})!`);
     if (parents.length > 0) throw SyntaxError(`Unexpected end: missing ${parents.length} closer(s) (${closer})!`);
     parent.suffix = prefix + str.slice(h);
     parent.opener = opener;
     parent.closer = closer;
     parent.escaper = escaper;
-    parent.blocker = blocker;
+    parent.quoter = quoter;
     return parent;
+};
+const escape1 = (str, { opener =defaultOpener1 , closer =defaultCloser1 , escaper =defaultEscaper1  } = {})=>{
+    let ret = '';
+    for (const c of str){
+        if (c === opener || c === closer || c === escaper) ret += escaper;
+        ret += c;
+    }
+    return ret;
+};
+const recur2 = (jevko, delimiters)=>{
+    const { subjevkos , suffix , tag  } = jevko;
+    if (tag !== undefined) {
+        return stringToHeredoc2(suffix, tag, delimiters);
+    }
+    let ret = '';
+    for (const { prefix , jevko: jevko1  } of subjevkos){
+        ret += `${escape1(prefix, delimiters)}${recur2(jevko1, delimiters)}`;
+    }
+    return delimiters.opener + ret + escape1(suffix, delimiters) + delimiters.closer;
+};
+const stringToHeredoc2 = (str, tag, delimiters)=>{
+    const { quoter: q  } = delimiters;
+    let id = tag;
+    let tok = `${q}${tag}${q}`;
+    let stret = `${str}${tok}`;
+    const pad = q === '=' ? '-' : '=';
+    while(stret.indexOf(tok) !== str.length){
+        id += pad;
+        tok = `${q}${id}${q}`;
+        stret = `${str}${tok}`;
+    }
+    return `${delimiters.escaper}${tok}${stret}`;
 };
 export { jevkoml as jevkoml };
 export { jevkodata as jevkodata, map as map, prep1 as prep, prettyFromJsonStr as prettyFromJsonStr };
 export { jevkocfg as jevkocfg };
-export { parseJevkoWithHeredocs1 as parseJevkoWithHeredocs };
+export { jevkoFromString1 as parseJevkoWithHeredocs };

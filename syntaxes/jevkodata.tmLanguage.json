@@ -55,8 +55,8 @@
     },
     "disabled-heredoc": {
       "name": "comment.jevkoml",
-      "begin": "\\s*(?:\\\\)?-(?:(?:`[`\\[\\]])|[^`\\[\\]])*`/([^/]*)/",
-      "end": "/\\1/"
+      "begin": "\\s*(?:\\\\)?-(?:(?:`[`\\[\\]])|[^`\\[\\]])*`'([^']*)'",
+      "end": "'\\1'"
     },
     "brackets-disabled": {
       "name": "comment.jevkodata",
@@ -104,8 +104,8 @@
     },
     "directive": {
       "name": "keyword.control.jevkodata",
-      "begin": "(?=\\s*((\\\\)?/((`[`\\[\\]])|[^`\\[\\]\\\\])+|\\\\)(\\[|`/))",
-      "end": "(?=(\\[|`/))",
+      "begin": "(?=\\s*((\\\\)?/((`[`\\[\\]])|[^`\\[\\]\\\\])+|\\\\)(\\[|`'))",
+      "end": "(?=(\\[|`'))",
       "patterns": [
         {
           "include": "#digraph2"
@@ -114,8 +114,8 @@
     },
     "key": {
       "name": "entity.other.attribute-name",
-      "begin": "(?=(((`[`\\[\\]])|[^`\\[\\]\\\\])+)(\\[|`/))",
-      "end": "(?=(\\[|`/))",
+      "begin": "(?=(((`[`\\[\\]])|[^`\\[\\]\\\\])+)(\\[|`'))",
+      "end": "(?=(\\[|`'))",
       "patterns": [
         {
           "include": "#digraph2"
@@ -171,8 +171,8 @@
       ]
     },
     "heredoc_default": {
-      "begin": "`/([^/]*)/",
-      "end": "/\\1/",
+      "begin": "`'([^']*)'",
+      "end": "'\\1'",
       "name": "string.jevko",
       "beginCaptures": {
         "0": {
@@ -186,8 +186,8 @@
       }
     },
     "heredoc_json": {
-      "begin": "`/(json|json5|sublime-settings|sublime-menu|sublime-keymap|sublime-mousemap|sublime-theme|sublime-build|sublime-project|sublime-completions)/",
-      "end": "/\\1/",
+      "begin": "`'(json|json5|sublime-settings|sublime-menu|sublime-keymap|sublime-mousemap|sublime-theme|sublime-build|sublime-project|sublime-completions)'",
+      "end": "'\\1'",
       "beginCaptures": {
         "0": {
           "name": "string.regexp.jevko"
@@ -205,8 +205,8 @@
       ]
     },
     "heredoc_xml": {
-      "begin": "`/(xml|xsd|tld|jsp|pt|cpt|dtml|rss|opml)/",
-      "end": "/\\1/",
+      "begin": "`'(xml|xsd|tld|jsp|pt|cpt|dtml|rss|opml)'",
+      "end": "'\\1'",
       "beginCaptures": {
         "0": {
           "name": "string.regexp.jevko"
@@ -224,8 +224,8 @@
       ]
     },
     "heredoc_html": {
-      "begin": "`/(html|htm|shtml|xhtml|inc|tmpl|tpl)/",
-      "end": "/\\1/",
+      "begin": "`'(html|htm|shtml|xhtml|inc|tmpl|tpl)'",
+      "end": "'\\1'",
       "beginCaptures": {
         "0": {
           "name": "string.regexp.jevko"
@@ -243,8 +243,8 @@
       ]
     },
     "heredoc_css": {
-      "begin": "`/(css)/",
-      "end": "/\\1/",
+      "begin": "`'(css)'",
+      "end": "'\\1'",
       "name": "meta.embedded.block.css",
       "beginCaptures": {
         "0": {
@@ -263,8 +263,8 @@
       ]
     },
     "heredoc_ini": {
-      "begin": "`/(ini|conf)/",
-      "end": "/\\1/",
+      "begin": "`'(ini|conf)'",
+      "end": "'\\1'",
       "beginCaptures": {
         "0": {
           "name": "string.regexp.jevko"
@@ -282,8 +282,8 @@
       ]
     },
     "heredoc_yaml": {
-      "begin": "`/(yaml|yml)/",
-      "end": "/\\1/",
+      "begin": "`'(yaml|yml)'",
+      "end": "'\\1'",
       "beginCaptures": {
         "0": {
           "name": "string.regexp.jevko"
@@ -301,8 +301,8 @@
       ]
     },
     "heredoc_toml": {
-      "begin": "`/(toml)/",
-      "end": "/\\1/",
+      "begin": "`'(toml)'",
+      "end": "'\\1'",
       "beginCaptures": {
         "0": {
           "name": "string.regexp.jevko"
