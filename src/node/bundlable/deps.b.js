@@ -1339,13 +1339,17 @@ const stringToHeredoc1 = (str)=>{
 const convertKey = (key)=>convertString(key);
 const convertString = (str)=>{
     const escaped = escape(str);
-    if (str.trim() !== str) return `'${escaped}'`;
+    if (str.trim() !== str || str[0] === "'" || str.at(-1) === "'") {
+        return `'${escaped}'`;
+    }
     return escaped;
 };
 const { opener , closer  } = defaultDelimiters;
 const convertValue = (value)=>{
     if (typeof value === 'string') {
-        return stringToHeredoc1(value);
+        const str = convertString(value);
+        if (str.length > value.length) return stringToHeredoc1(value);
+        return opener + str + closer;
     }
     return opener + value + closer;
 };
