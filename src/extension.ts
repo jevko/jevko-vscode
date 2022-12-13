@@ -2,7 +2,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import {main} from './node/portable/main.js'
+import {main} from './node/bundle.js'
 
 ////////////////////////////////              
 // This method is called when your extension is activated
