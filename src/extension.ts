@@ -31,6 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
 		},
 		"storage dir": context.globalStoragePath,
 		platform: "node",
+		pretty: true,
 	}
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
