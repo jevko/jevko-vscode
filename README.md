@@ -89,7 +89,9 @@ The following conversions are supported:
 * .json -> .jevkodata
 * .jevkoml -> .xml
 
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ElY8SABBQWM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Demo video: translating between .jevkodata and .json](https://img.youtube.com/vi/ElY8SABBQWM/maxresdefault.jpg)](https://youtu.be/ElY8SABBQWM)
+
+[Demo video: translating between .jevkodata and .json](https://img.youtube.com/vi/ElY8SABBQWM/maxresdefault.jpg)
 
 <!-- todo: more accurate description -->
 
