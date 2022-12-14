@@ -91,7 +91,7 @@ The following conversions are supported:
 
 [![Demo video: translating between .jevkodata and .json](https://img.youtube.com/vi/ElY8SABBQWM/maxresdefault.jpg)](https://youtu.be/ElY8SABBQWM)
 
-[Demo video: translating between .jevkodata and .json](https://img.youtube.com/vi/ElY8SABBQWM/maxresdefault.jpg)
+[Demo video: translating between .jevkodata and .json](https://youtu.be/ElY8SABBQWM)
 
 <!-- todo: more accurate description -->
 
