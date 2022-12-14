@@ -1926,14 +1926,16 @@ var importDirective = (jevko, options) => {
         subs.push(...subjevkos2);
         continue;
       } else if (directive === "paste") {
-        const fileName = string2(jevko2);
+        const opts = convert(jevko2);
+        const fileName = typeof opts === "string" ? opts : opts.path;
+        const tag = typeof opts === "string" ? void 0 : opts.tag;
         let path;
         if ((0, import_node_path.isAbsolute)(fileName))
           path = fileName;
         else
           path = (0, import_node_path.join)(dir, fileName);
         const src = readTextFileSync(path);
-        subs.push(makeTextNode2(src));
+        subs.push(makeTextNode2(src, tag));
         continue;
       }
     }
@@ -1947,16 +1949,17 @@ var string2 = (jevko) => {
     throw Error("oops");
   return suffix;
 };
-var makeTextNode2 = (text) => {
+var makeTextNode2 = (text, tag) => {
   return {
     prefix: "",
-    jevko: suffixToJevko2(text)
+    jevko: suffixToJevko2(text, tag)
   };
 };
-var suffixToJevko2 = (suffix) => {
+var suffixToJevko2 = (suffix, tag) => {
   return {
     subjevkos: [],
-    suffix
+    suffix,
+    tag
   };
 };
 
