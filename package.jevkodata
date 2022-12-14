@@ -2,160 +2,160 @@
   output [package.json]
   pretty [true]
 ]
-name `''jevko''
-publisher `''jevko''
+name [jevko]
+publisher [jevko]
 displayName `''Jevko Interface [EXPERIMENTAL]''
 description `''Jevko interface for Visual Studio Code. [EXPERIMENTAL]''
-version `''0.0.1''
+version [0.0.3]
 engines [
-  vscode `''^1.63.0''
+  vscode [^1.63.0]
 ]
 categories [
-  `''Other''
-  `''Programming Languages''
+  [Other]
+  [Programming Languages]
 ]
 activationEvents [
-  `''onCommand:jevko.translateCurrentFile''
-  `''onCommand:jevko.forceActivate''
-  `''onLanguage:jevkodata''
-  `''onLanguage:jevkoml''
-  `''onLanguage:json''
-  `''onLanguage:html''
-  `''onLanguage:xml''
+  [onCommand:jevko.translateCurrentFile]
+  [onCommand:jevko.forceActivate]
+  [onLanguage:jevkodata]
+  [onLanguage:jevkoml]
+  [onLanguage:json]
+  [onLanguage:html]
+  [onLanguage:xml]
 ]
-main `''./out/extension.js''
+main [./out/extension.js]
 contributes [
   commands [
     [
-      command `''jevko.translateCurrentFile''
-      title `''Jevko: translate current file''
+      command [jevko.translateCurrentFile]
+      title [Jevko: translate current file]
     ]
     [
-      command `''jevko.forceActivate''
-      title `''Jevko: force activate extension''
+      command [jevko.forceActivate]
+      title [Jevko: force activate extension]
     ]
   ]
   configuration [
-    title `''Jevko''
-    id `''jevko''
+    title [Jevko]
+    id [jevko]
     properties [
       jevko.overwrite [
-        type `''string''
+        type [string]
         enum [
-          `''ask''
-          `''always''
+          [ask]
+          [always]
         ]
         enumDescriptions [
-          `''%configuration.jevko.overwrite.ask%''
-          `''%configuration.jevko.overwrite.always%''
+          [%configuration.jevko.overwrite.ask%]
+          [%configuration.jevko.overwrite.always%]
         ]
-        default `''ask''
-        description `''Whether to overwrite a file if it already exists.''
+        default [ask]
+        description [Whether to overwrite a file if it already exists.]
       ]
     ]
   ]
   languages [
     [
-      id `''jevkoml''
+      id [jevkoml]
       aliases [
-        `''jevkoml''
+        [jevkoml]
       ]
       extensions [
-        `''.jevkoml''
-        `''.jvkml''
-        `''.jvkm''
-        `''.jm''
+        [.jevkoml]
+        [.jvkml]
+        [.jvkm]
+        [.jm]
       ]
       firstLine `''.*format\s*\[\s*jevkoml\s*\].*''
-      configuration `''./language-configuration.json''
+      configuration [./language-configuration.json]
       icon [
-        dark `''jevkoml.png''
-        light `''jevkoml.png''
+        dark [jevkoml.png]
+        light [jevkoml.png]
       ]
     ]
     [
-      id `''jevkodata''
+      id [jevkodata]
       aliases [
-        `''jevkodata''
+        [jevkodata]
       ]
       extensions [
-        `''.jevkodata''
-        `''.jevkocfg''
-        `''.jd''
-        `''.jc''
+        [.jevkodata]
+        [.jevkocfg]
+        [.jd]
+        [.jc]
       ]
       firstLine `''.*\bformat\s*\[\s*jevkodata\s*\].*''
-      configuration `''./language-configuration.json''
+      configuration [./language-configuration.json]
       icon [
-        dark `''jevkodata.png''
-        light `''jevkodata.png''
+        dark [jevkodata.png]
+        light [jevkodata.png]
       ]
     ]
   ]
   grammars [
     [
-      language `''jevkoml''
-      scopeName `''source.jevkoml''
-      path `''./syntaxes/jevkoml.tmLanguage.json''
+      language [jevkoml]
+      scopeName [source.jevkoml]
+      path [./syntaxes/jevkoml.tmLanguage.json]
     ]
     [
-      language `''jevkodata''
-      scopeName `''source.jevkodata''
-      path `''./syntaxes/jevkodata.tmLanguage.json''
+      language [jevkodata]
+      scopeName [source.jevkodata]
+      path [./syntaxes/jevkodata.tmLanguage.json]
     ]
   ]
 ]
 repository [
-  type `''git''
-  url `''https://codeberg.org/jevko-org/jevko-vscode.git''
+  type [git]
+  url [https://github.com/jevko/jevko-vscode.git]
 ]
-icon `''jevko.png''
+icon [jevko.png]
 galleryBanner [
-  color `''#000000''
-  theme `''dark''
+  color [#000000]
+  theme [dark]
 ]
-homepage `''https://jevko.org''
+homepage [https://jevko.org]
 keywords [
-  `''jevko''
-  `''interface''
-  `''integrated''
-  `''markup''
-  `''jevkoml''
-  `''syntax''
-  `''minimal''
-  `''text''
-  `''format''
-  `''heredoc''
-  `''html''
-  `''xml''
-  `''minimal''
-  `''simple''
-  `''flexible''
-  `''data''
-  `''jevkodata''
-  `''interchange''
-  `''configuration''
+  [jevko]
+  [interface]
+  [integrated]
+  [markup]
+  [jevkoml]
+  [syntax]
+  [minimal]
+  [text]
+  [format]
+  [heredoc]
+  [html]
+  [xml]
+  [minimal]
+  [simple]
+  [flexible]
+  [data]
+  [jevkodata]
+  [interchange]
+  [configuration]
 ]
 scripts [
-  vscode:prepublish `''npm run compile''
-  compile `''tsc -p ./''
-  clean `''rm -rf ./out''
-  clean-compile `''npm run clean && npm run compile''
-  watch `''tsc -watch -p ./''
-  pretest `''npm run compile && npm run lint''
-  lint `''eslint src --ext ts''
-  test `''node ./out/test/runTest.js''
+  vscode:prepublish [npm run compile]
+  compile [tsc -p ./]
+  clean [rm -rf ./out]
+  clean-compile [npm run clean && npm run compile]
+  watch [tsc -watch -p ./]
+  pretest [npm run compile && npm run lint]
+  lint [eslint src --ext ts]
+  test [node ./out/test/runTest.js]
 ]
 devDependencies [
-  @types/vscode `''^1.63.0''
-  @types/glob `''^8.0.0''
-  @types/mocha `''^10.0.1''
-  @types/node `''16.x''
-  @typescript-eslint/eslint-plugin `''^5.45.0''
-  @typescript-eslint/parser `''^5.45.0''
-  eslint `''^8.28.0''
-  glob `''^8.0.3''
-  mocha `''^10.1.0''
-  typescript `''^4.9.3''
-  @vscode/test-electron `''^2.2.0''
+  @types/vscode [^1.63.0]
+  @types/glob [^8.0.0]
+  @types/mocha [^10.0.1]
+  @types/node [16.x]
+  @typescript-eslint/eslint-plugin [^5.45.0]
+  @typescript-eslint/parser [^5.45.0]
+  eslint [^8.28.0]
+  glob [^8.0.3]
+  mocha [^10.1.0]
+  typescript [^4.9.3]
+  @vscode/test-electron [^2.2.0]
 ]

@@ -2,7 +2,6 @@
 <img src="jevko.png" width="80" height="80" /><br/>
 <a href="https://jevko.org">jevko.org</a><br/>
 <span>[EXPERIMENTAL]</span>
-<span>[WIP: NOT YET PUBLISHED]</span>
 </p>
 
 ⚠️⚠️⚠️ THIS EXTENSION DEPRECATES AND CONFLICTS WITH: ⚠️⚠️⚠️
@@ -17,17 +16,15 @@
 
 Jevko interface for Visual Studio Code.
 
-<!-- TODO: PUBLISH -->
-<!-- This extension is published to the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=jevko.jevko) as well as the [Open VSX Registry](https://open-vsx.org/extension/jevko/jevko). -->
+This extension is published to the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=jevko.jevko) as well as the [Open VSX Registry](https://open-vsx.org/extension/jevko/jevko).
 
-<!-- TODO: PUBLISH -->
-<!-- ## Installation
+## Installation
 
 Launch VS Code Quick Open (Ctrl+P), paste the following command, and press enter.
 
 ```
 ext install jevko.jevko
-``` -->
+```
 
 ## Features
 
@@ -56,17 +53,55 @@ Basic syntax highlighting for .jevkoml that works in Visual Studio Code.
 
 ![jevkomarkup screenshot](jm-screenshot.png)
 
-### Automatic conversion on save
+### Actions on save
+
+If you put the following at the top of your .jevkodata file:
+
+```
+[
+  output [NAME.json]
+]
+```
+
+where `NAME` is some file name chosen by you, the .jevkodata file will be automatically converted to the specified .json file on save (Ctrl+S).
+
+Similarly, you can put:
+
+```
+[
+  output [NAME.html]
+]
+```
+
+on top of your .jevkoml file and it will be converted to the specified .html file on save (Ctrl+S).
+
+<!-- todo: pictures/videos -->
+
+### Commands
+
+#### Jevko: translate current file
+
+Press Ctrl+Shift+P and select the `Jevko: translate current file` command to convert current file to another format.
+
+The following conversions are supported:
+
+* .jevkodata -> .json
+* .json -> .jevkodata
+* .jevkoml -> .xml
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ElY8SABBQWM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 <!-- todo: more accurate description -->
 
-#### .jd -> .json
+<!-- #### .jd -> .json -->
+<!-- #### .jevkodata -> .json
 
-With this extension, when you save a .jd file, it is automatically converted to and saved as a corresponding JSON file.
+With this extension, when you save a .jd file, it is automatically converted to and saved as a corresponding JSON file. -->
 
-#### .jm -> .xml or .html
+<!-- #### .jm -> .xml or .html -->
+<!-- #### .jevkoml -> .xml or .html
 
-With this extension, when you save a .jm file, it is automatically converted to and saved as a corresponding XML/HTML file.
+With this extension, when you save a .jm file, it is automatically converted to and saved as a corresponding XML/HTML file. -->
 
 <!-- todo: implement -->
 <!-- ### Conversion commands
