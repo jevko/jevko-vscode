@@ -175,170 +175,6 @@ var stringToHeredoc = (str, tag, delimiters) => {
   }
   return `${delimiters.escaper}${tok}${stret}`;
 };
-var DenoStdInternalError = class extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "DenoStdInternalError";
-  }
-};
-function assert(expr, msg = "") {
-  if (!expr) {
-    throw new DenoStdInternalError(msg);
-  }
-}
-function copy(src, dst, off = 0) {
-  off = Math.max(0, Math.min(off, dst.byteLength));
-  const dstBytesAvailable = dst.byteLength - off;
-  if (src.byteLength > dstBytesAvailable) {
-    src = src.subarray(0, dstBytesAvailable);
-  }
-  dst.set(src, off);
-  return src.byteLength;
-}
-var MIN_READ = 32 * 1024;
-var MAX_SIZE = 2 ** 32 - 2;
-var Buffer2 = class {
-  #buf;
-  #off = 0;
-  constructor(ab) {
-    this.#buf = ab === void 0 ? new Uint8Array(0) : new Uint8Array(ab);
-  }
-  bytes(options = {
-    copy: true
-  }) {
-    if (options.copy === false)
-      return this.#buf.subarray(this.#off);
-    return this.#buf.slice(this.#off);
-  }
-  empty() {
-    return this.#buf.byteLength <= this.#off;
-  }
-  get length() {
-    return this.#buf.byteLength - this.#off;
-  }
-  get capacity() {
-    return this.#buf.buffer.byteLength;
-  }
-  truncate(n) {
-    if (n === 0) {
-      this.reset();
-      return;
-    }
-    if (n < 0 || n > this.length) {
-      throw Error("bytes.Buffer: truncation out of range");
-    }
-    this.#reslice(this.#off + n);
-  }
-  reset() {
-    this.#reslice(0);
-    this.#off = 0;
-  }
-  #tryGrowByReslice(n) {
-    const l = this.#buf.byteLength;
-    if (n <= this.capacity - l) {
-      this.#reslice(l + n);
-      return l;
-    }
-    return -1;
-  }
-  #reslice(len) {
-    assert(len <= this.#buf.buffer.byteLength);
-    this.#buf = new Uint8Array(this.#buf.buffer, 0, len);
-  }
-  readSync(p) {
-    if (this.empty()) {
-      this.reset();
-      if (p.byteLength === 0) {
-        return 0;
-      }
-      return null;
-    }
-    const nread = copy(this.#buf.subarray(this.#off), p);
-    this.#off += nread;
-    return nread;
-  }
-  read(p) {
-    const rr = this.readSync(p);
-    return Promise.resolve(rr);
-  }
-  writeSync(p) {
-    const m = this.#grow(p.byteLength);
-    return copy(p, this.#buf, m);
-  }
-  write(p) {
-    const n = this.writeSync(p);
-    return Promise.resolve(n);
-  }
-  #grow(n1) {
-    const m = this.length;
-    if (m === 0 && this.#off !== 0) {
-      this.reset();
-    }
-    const i = this.#tryGrowByReslice(n1);
-    if (i >= 0) {
-      return i;
-    }
-    const c = this.capacity;
-    if (n1 <= Math.floor(c / 2) - m) {
-      copy(this.#buf.subarray(this.#off), this.#buf);
-    } else if (c + n1 > MAX_SIZE) {
-      throw new Error("The buffer cannot be grown beyond the maximum size.");
-    } else {
-      const buf = new Uint8Array(Math.min(2 * c + n1, MAX_SIZE));
-      copy(this.#buf.subarray(this.#off), buf);
-      this.#buf = buf;
-    }
-    this.#off = 0;
-    this.#reslice(Math.min(m + n1, MAX_SIZE));
-    return m;
-  }
-  grow(n) {
-    if (n < 0) {
-      throw Error("Buffer.grow: negative count");
-    }
-    const m = this.#grow(n);
-    this.#reslice(m);
-  }
-  async readFrom(r) {
-    let n = 0;
-    const tmp = new Uint8Array(MIN_READ);
-    while (true) {
-      const shouldGrow = this.capacity - this.length < MIN_READ;
-      const buf = shouldGrow ? tmp : new Uint8Array(this.#buf.buffer, this.length);
-      const nread = await r.read(buf);
-      if (nread === null) {
-        return n;
-      }
-      if (shouldGrow)
-        this.writeSync(buf.subarray(0, nread));
-      else
-        this.#reslice(this.length + nread);
-      n += nread;
-    }
-  }
-  readFromSync(r) {
-    let n = 0;
-    const tmp = new Uint8Array(MIN_READ);
-    while (true) {
-      const shouldGrow = this.capacity - this.length < MIN_READ;
-      const buf = shouldGrow ? tmp : new Uint8Array(this.#buf.buffer, this.length);
-      const nread = r.readSync(buf);
-      if (nread === null) {
-        return n;
-      }
-      if (shouldGrow)
-        this.writeSync(buf.subarray(0, nread));
-      else
-        this.#reslice(this.length + nread);
-      n += nread;
-    }
-  }
-};
-async function readAll(r) {
-  const buf = new Buffer2();
-  await buf.readFrom(r);
-  return buf.bytes();
-}
 var breakPrefix = (prefix) => {
   let i = prefix.length - 1;
   for (; i >= 0; --i) {
@@ -416,7 +252,7 @@ var toHtml = async (jevko) => {
     if (tag === "xml" || tag === "html") {
       return suffix;
     } else if (tag !== void 0) {
-      const highlighter = highlighters.get(tag) ?? makeHighlighter(tag);
+      const highlighter = highlighters.get(tag) ?? defaultHighlighter;
       return highlighter(suffix);
     }
     return htmlEscape(suffix);
@@ -428,25 +264,8 @@ var toHtml = async (jevko) => {
   }
   return ret + htmlEscape(suffix.trimEnd());
 };
-var makeHighlighter = (tag) => async (text) => {
-  const pandoc = Deno.run({
-    cmd: [
-      "pandoc",
-      "-f",
-      "markdown"
-    ],
-    stdin: "piped",
-    stdout: "piped"
-  });
-  await pandoc.stdin.write(new TextEncoder().encode("```" + tag + "\n" + text + "\n```\n"));
-  await pandoc.stdin.close();
-  const out = await readAll(pandoc.stdout);
-  await pandoc.stdout.close();
-  const outt = new TextDecoder().decode(out);
-  await pandoc.status();
-  return outt;
-};
 var cdata = (text) => htmlEscape(text);
+var defaultHighlighter = cdata;
 var highlighters = /* @__PURE__ */ new Map([
   [
     "",
@@ -637,10 +456,14 @@ var jevkoml = async (preppedjevko, options) => {
   if (root !== void 0) {
     let main2, rest;
     if (Array.isArray(root)) {
-      console.assert(root.every((v) => typeof v === "string"));
+      if (root.every((v) => typeof v === "string") === false) {
+        throw Error(`Expected root to be a string or a list of strings!`);
+      }
       [main2, ...rest] = root;
     } else {
-      console.assert(typeof root === "string");
+      if (typeof root !== "string") {
+        throw Error(`Expected root to be a string or a list of strings!`);
+      }
       main2 = root;
       rest = [];
     }
@@ -1406,7 +1229,7 @@ var { opener, closer } = defaultDelimiters;
 var convertValue = (value) => {
   if (typeof value === "string") {
     const str = convertString(value);
-    if (str.length > value.length)
+    if (str !== "'''" && str !== "''''" && str.length > value.length)
       return stringToHeredoc1(value);
     return opener + str + closer;
   }
@@ -1967,8 +1790,13 @@ var suffixToJevko2 = (suffix, tag) => {
 var defaultOptions = {
   platform: "deno"
 };
+var defaultOutput_ = (text) => console.log(text);
+var defaultInput_ = async () => readStdinText();
 var main = async (argmap = {}) => {
-  let { format, input } = argmap;
+  let {
+    input,
+    defaultInput = defaultInput_
+  } = argmap;
   let source;
   if (input !== void 0) {
     const fileName = argmap.input;
@@ -1977,7 +1805,7 @@ var main = async (argmap = {}) => {
     if (argmap.format === void 0)
       argmap.format = (0, import_node_path.extname)(fileName).slice(1);
   } else {
-    source = await readStdinText();
+    source = await defaultInput();
     argmap.dir = ".";
   }
   if (argmap.format === "json") {
@@ -1990,22 +1818,26 @@ var main = async (argmap = {}) => {
   {
     const jevko = jevkoFromString1(src);
     const preppedJevko = importDirective(jevko, options);
-    const { format: format2 } = options;
+    const { format } = options;
     let result;
-    if (format2 === "jevkoml") {
+    if (format === "jevkoml") {
       const document = await jevkoml(preppedJevko, options);
       result = document;
-    } else if (format2 === "jevkocfg") {
+    } else if (format === "jevkocfg") {
       result = jevkocfg(preppedJevko, options);
-    } else if (format2 === "jevkodata") {
+    } else if (format === "jevkodata") {
       result = jevkodata(preppedJevko, options);
     } else
-      throw Error(`Unrecognized format: ${format2}`);
+      throw Error(`Unrecognized format: ${format}`);
     write(result, options);
   }
 };
 var write = (result, options) => {
-  let { output, dir } = options;
+  let {
+    output,
+    dir,
+    defaultOutput = defaultOutput_
+  } = options;
   if (output === void 0 && options["infer output"] === true) {
     const { input, format } = options;
     if (input !== void 0) {
@@ -2037,7 +1869,7 @@ var write = (result, options) => {
     writeTextFileSync(output2, result);
   };
   if (output === void 0)
-    console.log(result);
+    defaultOutput(result);
   else {
     if ((0, import_node_path.isAbsolute)(output)) {
       commit(output);

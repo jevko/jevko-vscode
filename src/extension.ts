@@ -32,6 +32,12 @@ export function activate(context: vscode.ExtensionContext) {
 		"storage dir": context.globalStoragePath,
 		platform: "node",
 		pretty: true,
+		// todo: not sure if should do that on JSON->jevkodata
+		defaultOutput: (text: string) => {
+			vscode.workspace.openTextDocument({
+				content: text
+			}).then(doc => vscode.window.showTextDocument(doc))
+		},
 	}
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
