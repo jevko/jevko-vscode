@@ -1,0 +1,3 @@
+{
+  "jevko-interface.js": "git+ssh://git@github.com:jevko/jevko-interface.js.git#semver:0.1.3"
+}
