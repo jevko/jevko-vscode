@@ -2,6 +2,16 @@
 
 All notable changes to the "jevko" extension will be documented in this file.
 
+## 0.0.4
+
+Default output to an untitled file.
+
+Fix .jevkoml heredoc highlighting.
+
+jevko-interface.js is now an external dependency rather than baked in.
+
+Fix links in README.
+
 ## 0.0.3
 
 Update README.
