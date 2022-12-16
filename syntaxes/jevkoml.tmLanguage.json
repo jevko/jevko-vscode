@@ -42,7 +42,7 @@
     },
     "disabled-heredoc": {
       "name": "comment.jevkoml",
-      "begin": "\\s*(?:\\\\)?-(?:(?:`[`\\[\\]])|[^`\\[\\]])*`'([^/]*)'",
+      "begin": "\\s*(?:\\\\)?-(?:(?:`[`\\[\\]])|[^`\\[\\]])*`'([^']*)'",
       "end": "'\\1'"
     },
     "brackets-disabled": {
@@ -161,7 +161,7 @@
       ]
     },
     "heredoc_default": {
-      "begin": "`'([^/]*)'",
+      "begin": "`'([^']*)'",
       "end": "'\\1'",
       "name": "string.jevko",
       "beginCaptures": {
