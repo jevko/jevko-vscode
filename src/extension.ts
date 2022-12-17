@@ -38,12 +38,17 @@ export function activate(context: vscode.ExtensionContext) {
 				content: text
 			}).then(doc => vscode.window.showTextDocument(doc))
 		},
+		defaultFormatHandler: (format: string) => {
+			console.log('[Extension jevko.jevko] Ignoring unknown format:', format)
+		}
 	}
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated 
 	console.log('Extension "jevko.jevko" is now active!');
 
+	//?TODO: perhaps don't even call main on unrecognized format?
+	// altho maybe let it handle it -- esp. option parsing
 	vscode.workspace.onDidSaveTextDocument((e) => {
 		let filePath = e.fileName
 		console.log('SAVE', filePath)
