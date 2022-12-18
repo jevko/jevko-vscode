@@ -156,6 +156,9 @@
           "include": "#heredoc_toml"
         },
         {
+          "include": "#heredoc_markdown"
+        },
+        {
           "include": "#heredoc_default"
         }
       ]
@@ -229,6 +232,25 @@
       "patterns": [
         {
           "include": "text.html.basic"
+        }
+      ]
+    },
+    "heredoc_markdown": {
+      "begin": "`'(md|markdown)'",
+      "end": "'\\1'",
+      "beginCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "string.regexp.jevko"
+        }
+      },
+      "patterns": [
+        {
+          "include": "text.html.markdown"
         }
       ]
     },

@@ -40,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
 		},
 		defaultFormatHandler: (format: string) => {
 			console.log('[Extension jevko.jevko] Ignoring unknown format:', format)
-		}
+		},
 	}
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
