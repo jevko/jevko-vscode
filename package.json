@@ -3,7 +3,7 @@
   "publisher": "jevko",
   "displayName": "Jevko Interface [EXPERIMENTAL]",
   "description": "Jevko interface for Visual Studio Code. [EXPERIMENTAL]",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.63.0"
   },

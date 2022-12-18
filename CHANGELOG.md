@@ -2,6 +2,12 @@
 
 All notable changes to the "jevko" extension will be documented in this file.
 
+## 0.0.5
+
+[EXPERIMENTAL] Add basic markdown heredocs to .jevkoml.
+
+Handle unrecognized formats.
+
 ## 0.0.4
 
 Default output to an untitled file.
