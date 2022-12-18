@@ -53,7 +53,24 @@ export function activate(context: vscode.ExtensionContext) {
 		let filePath = e.fileName
 		console.log('SAVE', filePath)
 
-		main({...defaultOptions, input: filePath})
+		if (filePath.endsWith('.json')) {
+			vscode.window.showInformationMessage(
+				`Convert this .json file to corresponding .jevkodata file?`, 
+				// todo: add Always & Never options
+				'Yes', /*'Always', 'Never',*/ 'No'
+			).then(value => {
+				if (value === 'Yes') {
+					main({
+						...defaultOptions, 
+						input: filePath, 
+						'infer output': true,
+					})
+				}
+				// todo: if value === 'Never' or 'Always', save choice and don't ask again
+			})
+		} else {
+			main({...defaultOptions, input: filePath})
+		}
 
 		console.log('SAVED*****') 
 	})
