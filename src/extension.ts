@@ -57,6 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage(
 				`Convert this .json file to corresponding .jevkodata file?`, 
 				// todo: add Always & Never options
+				// perhaps add option to save to untitled/new file
 				'Yes', /*'Always', 'Never',*/ 'No'
 			).then(value => {
 				if (value === 'Yes') {

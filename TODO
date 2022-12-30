@@ -1,3 +1,5 @@
 perhaps move scripts/*.sh into package.json
 
 add DEVELOPMENT.md (or SETUP.md) explaining scripts, setup, etc.
+
+use jevkoml 0.6.0, add option to convert from XML/HTML
