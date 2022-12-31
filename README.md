@@ -4,14 +4,6 @@
 <span>[EXPERIMENTAL]</span>
 </p>
 
-⚠️⚠️⚠️ THIS EXTENSION DEPRECATES AND CONFLICTS WITH: ⚠️⚠️⚠️
-
-* [jevkodata-basic-highlighting](https://github.com/jevko/jevkodata-basic-highlighting-vscode): [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=jevko.jevkodata-basic-highlighting) | [Open VSX Registry](https://open-vsx.org/extension/jevko/jevkodata-basic-highlighting)
-
-* [jevkoml-basic-highlighting](https://github.com/jevko/jevkoml-basic-highlighting-vscode): [Open VSX Registry](https://open-vsx.org/extension/jevko/jevkoml-basic-highlighting) | [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=jevko.jevkoml-basic-highlighting)
-
-⚠️⚠️⚠️ PLEASE UNINSTALL/DISABLE THESE EXTENSIONS BEFORE INSTALLING THIS ONE ⚠️⚠️⚠️
-
 # Jevko Interface
 
 Jevko interface for Visual Studio Code.
