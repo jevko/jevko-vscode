@@ -19,6 +19,9 @@
     },
     {
       "include": "#heredoc"
+    },
+    {
+      "include": "#digraph2"
     }
   ],
   "repository": {
