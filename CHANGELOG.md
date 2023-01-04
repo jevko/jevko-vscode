@@ -2,6 +2,16 @@
 
 All notable changes to the "jevko" extension will be documented in this file.
 
+## 0.0.6
+
+Ask on saving .json files whether to convert to .jevkodata: infer output file rather than save to untitled.
+
+[EXMPERIMENTAL] Basic translation from XML/HTML to .jevkoml.
+
+.jevkoml syntax highlighting: properly highlight digraphs in freeform text.
+
+Remove depreciation warning from README.
+
 ## 0.0.5
 
 [EXPERIMENTAL] Add basic markdown heredocs to .jevkoml.
