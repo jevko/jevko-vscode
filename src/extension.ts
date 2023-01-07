@@ -51,11 +51,9 @@ export function activate(context: vscode.ExtensionContext) {
 	// altho maybe let it handle it -- esp. option parsing
 	vscode.workspace.onDidSaveTextDocument((e) => {
 		let filePath = e.fileName
-		console.log('SAVE', filePath)
+		const fileExtension = filePath.slice(filePath.lastIndexOf('.') + 1)
 
-		const ext = filePath.slice(filePath.lastIndexOf('.') + 1)
-
-		if (ext === 'json') {
+		if (fileExtension === 'json') {
 			vscode.window.showInformationMessage(
 				`Convert this .json file to corresponding .jevkodata file?`, 
 				// todo: add Always & Never options
@@ -71,9 +69,9 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				// todo: if value === 'Never' or 'Always', save choice and don't ask again
 			})
-		} else if (['html', 'xml', 'xhtml'].includes(ext)) {
+		} else if (['html', 'xml', 'xhtml'].includes(fileExtension)) {
 			vscode.window.showInformationMessage(
-				`Convert this .${ext} file to corresponding .jevkoml file?`, 
+				`Convert this .${fileExtension} file to corresponding .jevkoml file?`, 
 				// todo: add Always & Never options
 				// perhaps add option to save to untitled/new file
 				'Yes', /*'Always', 'Never',*/ 'No'
@@ -90,8 +88,6 @@ export function activate(context: vscode.ExtensionContext) {
 		} else {
 			main({...defaultOptions, input: filePath})
 		}
-
-		console.log('SAVED*****') 
 	})
 
 	let disposable = vscode.commands.registerCommand('jevko.translateCurrentFile', () => {
