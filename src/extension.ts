@@ -43,12 +43,8 @@ export function activate(context: vscode.ExtensionContext) {
 		},
 	}
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated 
 	console.log('Extension "jevko.jevko" is now active!');
 
-	//?TODO: perhaps don't even call main on unrecognized format?
-	// altho maybe let it handle it -- esp. option parsing
 	vscode.workspace.onDidSaveTextDocument((e) => {
 		let filePath = e.fileName
 		const fileExtension = filePath.slice(filePath.lastIndexOf('.') + 1)
@@ -86,6 +82,7 @@ export function activate(context: vscode.ExtensionContext) {
 				// todo: if value === 'Never' or 'Always', save choice and don't ask again
 			})
 		} else {
+			// handle all other formats, including unrecognized
 			main({...defaultOptions, input: filePath})
 		}
 	})
