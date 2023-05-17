@@ -2,6 +2,12 @@
 
 All notable changes to the "jevko" extension will be documented in this file.
 
+## 0.0.7
+
+Ask before showing default output (new file).
+
+[EXPERIMENTAL] Basic syntax highlighting for Djedat.
+
 ## 0.0.6
 
 Ask on saving .json files whether to convert to .jevkodata: infer output file rather than save to untitled.

@@ -34,9 +34,20 @@ export function activate(context: vscode.ExtensionContext) {
 		pretty: true,
 		// todo: not sure if should do that on JSON->jevkodata
 		defaultOutput: (text: string) => {
-			vscode.workspace.openTextDocument({
-				content: text
-			}).then(doc => vscode.window.showTextDocument(doc))
+			// todo: ask first -- allow dismissing forever
+			vscode.window.showInformationMessage(
+				`Jevko: Open translation of current file in new document?`, 
+				// todo: add Always & Never options
+				// perhaps add option to save to untitled/new file
+				'Yes', /*'Always', 'Never',*/ 'No'
+			).then(value => {
+				if (value === 'Yes') {
+					vscode.workspace.openTextDocument({
+						content: text
+					}).then(doc => vscode.window.showTextDocument(doc))
+				}
+				// todo: if value === 'Never' or 'Always', save choice and don't ask again
+			})
 		},
 		defaultFormatHandler: (format: string) => {
 			console.log('[Extension jevko.jevko] Ignoring unknown format:', format)

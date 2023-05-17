@@ -6,7 +6,7 @@ name [jevko]
 publisher [jevko]
 displayName `''Jevko Interface [EXPERIMENTAL]''
 description `''Jevko interface for Visual Studio Code. [EXPERIMENTAL]''
-version [0.0.6]
+version [0.0.7]
 engines [
   vscode [^1.63.0]
 ]
@@ -91,6 +91,21 @@ contributes [
         light [jevkodata.png]
       ]
     ]
+    [
+      id [djedat]
+      aliases [
+        [djedat]
+      ]
+      extensions [
+        [.djedat]
+        [.djd]
+      ]
+      configuration [./language-configuration.json]
+      icon [
+        dark [jevkodata.png]
+        light [jevkodata.png]
+      ]
+    ]
   ]
   grammars [
     [
@@ -102,6 +117,11 @@ contributes [
       language [jevkodata]
       scopeName [source.jevkodata]
       path [./syntaxes/jevkodata.tmLanguage.json]
+    ]
+    [
+      language [djedat]
+      scopeName [source.djedat]
+      path [./syntaxes/djedat.tmLanguage.json]
     ]
   ]
 ]
@@ -133,6 +153,8 @@ keywords [
   [flexible]
   [data]
   [jevkodata]
+  [djedat]
+  [djevko]
   [interchange]
   [configuration]
 ]
