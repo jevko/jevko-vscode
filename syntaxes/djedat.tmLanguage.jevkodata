@@ -16,7 +16,7 @@ patterns [
     include `''#disabled''
   ]
   [
-    include `''#disabled-heredoc''
+    include `''#disabled_heredoc''
   ]
   [
     include `''#key''
@@ -59,26 +59,26 @@ repository [
     name `''entity.other.djedat''
   ]
   str [
-    match `''[^\[\]`]*(?=\])''
+    match `''[^\[\]']*(?=\])''
     name `''string.djedat''
   ]
   disabled [
     name `''comment.djedat''
-    begin `''\s*(\\)?;((`[`\[\]])|[^`\[\]])*\[''
+    begin `''\s*(\\)?;([^'\[\]])*\[''
     end `''\]''
     patterns [
       [
-        include `''#brackets-disabled''
+        include `''#brackets_disabled''
       ]
     ]
   ]
-  brackets-disabled [
+  brackets_disabled [
     name `''comment.djedat''
     begin `''\[''
     end `''\]''
     patterns [
       [
-        include `''#brackets-disabled''
+        include `''#brackets_disabled''
       ]
     ]
   ]
@@ -88,11 +88,11 @@ repository [
   ]
   comment [
     name `''comment.djedat''
-    match `''[^`\[\]\\]+$''
+    match `''[^'\[\]\\]+$''
   ]
   key [
     name `''entity.other.attribute-name''
-    match `''[^`\[\]\\]+(?=\[)''
+    match `''[^'\[\]\\]+(?=\[)''
   ]
   heredoc [
     patterns [
@@ -122,40 +122,47 @@ repository [
       ]
     ]
   ]
-  -[textmate limitation?: not possible to disable the inside of the `[ `] pair if end is opening square bracket ]
-  disabled-heredoc [
-    name `''comment.jevkoml''
-    begin `'='\s*;(?:[^`\[\]/]*/)?([^`\[\]]*)`'='
-    end `'='`\1\s*(?=[\[\]])'='
+  -[
+    textmate limitation?: not possible to disable the inside of the `[ `] pair if end is opening square bracket
+    this can be somewhat rectified w/ semantic highlighting
   ]
-  -[textmate limitation: end tag and the `[ or `] that follows it must be on the same line] 
+  disabled_heredoc [
+    name `''comment.djedat''
+    begin `'='\s*;(?:[^'\[\]\\]*\\)?([^'\[\]]*)''='
+    end `'=''\1\s*(?=[\[\]])'='
+  ]
+  -[
+    textmate limitation: end tag and the `[ or `] that follows it must be on the same line
+    a semi-sensible way to rectify is to indicate an error with a language extension (semantic-higlighting-like),
+    suggesting that user delete an offending linebreak, explaining that it's a limitation of vscode
+  ] 
   heredoc_default [
-    begin `'='\s*(?:[^`\[\]/]*/)?([^`\[\]]*)`'='
-    end `'='`\1\s*(?=[\[\]])'='
-    name `''string.other.jevko'' 
+    begin `'='\s*(?:[^'\[\]\\]*\\)?([^'\[\]]*)''='
+    end `'=''\1\s*(?=[\[\]])'='
+    name `''string.other.djedat'' 
     beginCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     endCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
   ]
   heredoc_json [
-    begin `'='\s*(?:json|json5)/([^`\[\]]*)`'='
-    end `'='`\1\s*(?=[\[\]])'='
-    name `''string.jevko''
+    begin `'='\s*(?:json|json5)\\([^'\[\]]*)''='
+    end `'=''\1\s*(?=[\[\]])'='
+    name `''string.djedat''
     beginCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     endCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     patterns [
@@ -165,16 +172,16 @@ repository [
     ]
   ]
   heredoc_xml [
-    begin `'='\s*(?:xml|xsd|tld|jsp|pt|cpt|dtml|rss|opml)/([^`\[\]]*)`'='
-    end `'='`\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:xml|xsd|tld|jsp|pt|cpt|dtml|rss|opml)\\([^'\[\]]*)''='
+    end `'=''\1\s*(?=[\[\]])'='
     beginCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     endCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     patterns [
@@ -184,16 +191,16 @@ repository [
     ]
   ]
   heredoc_html [
-    begin `'='\s*(?:html|htm|shtml|xhtml|inc|tmpl|tpl)/([^`\[\]]*)`'='
-    end `'='`\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:html|htm|shtml|xhtml|inc|tmpl|tpl)\\([^'\[\]]*)''='
+    end `'=''\1\s*(?=[\[\]])'='
     beginCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     endCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     patterns [
@@ -203,17 +210,17 @@ repository [
     ]
   ]
   heredoc_css [
-    begin `'='\s*(?:css)/([^`\[\]]*)`'='
-    end `'='`\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:css)\\([^'\[\]]*)''='
+    end `'=''\1\s*(?=[\[\]])'='
     name `''meta.embedded.block.css''
     beginCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     endCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     patterns [
@@ -223,16 +230,16 @@ repository [
     ]
   ]
   heredoc_ini [
-    begin `'='\s*(?:ini|conf)/([^`\[\]]*)`'='
-    end `'='`\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:ini|conf)\\([^'\[\]]*)''='
+    end `'=''\1\s*(?=[\[\]])'='
     beginCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     endCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     patterns [
@@ -242,16 +249,16 @@ repository [
     ]
   ]
   heredoc_yaml [
-    begin `'='\s*(?:yaml|yml)/([^`\[\]]*)`'='
-    end `'='`\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:yaml|yml)\\([^'\[\]]*)''='
+    end `'=''\1\s*(?=[\[\]])'='
     beginCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     endCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     patterns [
@@ -261,16 +268,16 @@ repository [
     ]
   ]
   heredoc_toml [
-    begin `'='\s*(?:toml)/([^`\[\]]*)`'='
-    end `'='`\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:toml)\\([^'\[\]]*)''='
+    end `'=''\1\s*(?=[\[\]])'='
     beginCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     endCaptures [
       0 [
-        name `''string.regexp.jevko''
+        name `''string.regexp.djedat''
       ]
     ]
     patterns [
