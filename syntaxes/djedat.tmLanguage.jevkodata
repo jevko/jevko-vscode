@@ -59,16 +59,16 @@ repository [
     name `''entity.other.djedat''
   ]
   str [
-    match `''[^\[\]']*(?=\])''
+    match `''[^`\[\]]*(?=\])''
     name `''string.djedat''
   ]
   comment [
     name `''comment.djedat''
-    match `''[^'\[\]]+$''
+    match `''[^`\[\]]+$''
   ]
   disabled [
     name `''comment.djedat''
-    begin `''\s*;([^'\[\]])*\[''
+    begin `''\s*;([^`\[\]])*\[''
     end `''\]''
     patterns [
       [
@@ -92,7 +92,7 @@ repository [
   ]
   key [
     name `''entity.other.attribute-name''
-    match `''[^'\[\]]+(?=\[)''
+    match `''[^`\[\]]+(?=\[)''
   ]
   heredoc [
     patterns [
@@ -128,8 +128,8 @@ repository [
   ]
   disabled_heredoc [
     name `''comment.djedat''
-    begin `'='\s*;(?:[^'\[\]/]*/)?([^'\[\]]*)''='
-    end `'=''\1\s*(?=[\[\]])'='
+    begin `'='\s*;(?:[^`\[\]/]*/)?([^`\[\]]*)`'='
+    end `'='`\1\s*(?=[\[\]])'='
   ]
   -[
     textmate limitation: end tag and the `[ or `] that follows it must be on the same line
@@ -137,8 +137,8 @@ repository [
     suggesting that user delete an offending linebreak, explaining that it's a limitation of vscode
   ] 
   heredoc_default [
-    begin `'='\s*(?:[^'\[\]/]*/)?([^'\[\]]*)''='
-    end `'=''\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:[^`\[\]/]*/)?([^`\[\]]*)`'='
+    end `'='`\1\s*(?=[\[\]])'='
     name `''string.other.djedat'' 
     beginCaptures [
       0 [
@@ -152,8 +152,8 @@ repository [
     ]
   ]
   heredoc_json [
-    begin `'='\s*(?:json|json5)/([^'\[\]]*)''='
-    end `'=''\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:json|json5)/([^`\[\]]*)`'='
+    end `'='`\1\s*(?=[\[\]])'='
     name `''string.djedat''
     beginCaptures [
       0 [
@@ -172,8 +172,8 @@ repository [
     ]
   ]
   heredoc_xml [
-    begin `'='\s*(?:xml|xsd|tld|jsp|pt|cpt|dtml|rss|opml)/([^'\[\]]*)''='
-    end `'=''\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:xml|xsd|tld|jsp|pt|cpt|dtml|rss|opml)/([^`\[\]]*)`'='
+    end `'='`\1\s*(?=[\[\]])'='
     beginCaptures [
       0 [
         name `''string.regexp.djedat''
@@ -191,8 +191,8 @@ repository [
     ]
   ]
   heredoc_html [
-    begin `'='\s*(?:html|htm|shtml|xhtml|inc|tmpl|tpl)/([^'\[\]]*)''='
-    end `'=''\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:html|htm|shtml|xhtml|inc|tmpl|tpl)/([^`\[\]]*)`'='
+    end `'='`\1\s*(?=[\[\]])'='
     beginCaptures [
       0 [
         name `''string.regexp.djedat''
@@ -210,8 +210,8 @@ repository [
     ]
   ]
   heredoc_css [
-    begin `'='\s*(?:css)/([^'\[\]]*)''='
-    end `'=''\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:css)/([^`\[\]]*)`'='
+    end `'='`\1\s*(?=[\[\]])'='
     name `''meta.embedded.block.css''
     beginCaptures [
       0 [
@@ -230,8 +230,8 @@ repository [
     ]
   ]
   heredoc_ini [
-    begin `'='\s*(?:ini|conf)/([^'\[\]]*)''='
-    end `'=''\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:ini|conf)/([^`\[\]]*)`'='
+    end `'='`\1\s*(?=[\[\]])'='
     beginCaptures [
       0 [
         name `''string.regexp.djedat''
@@ -249,8 +249,8 @@ repository [
     ]
   ]
   heredoc_yaml [
-    begin `'='\s*(?:yaml|yml)/([^'\[\]]*)''='
-    end `'=''\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:yaml|yml)/([^`\[\]]*)`'='
+    end `'='`\1\s*(?=[\[\]])'='
     beginCaptures [
       0 [
         name `''string.regexp.djedat''
@@ -268,8 +268,8 @@ repository [
     ]
   ]
   heredoc_toml [
-    begin `'='\s*(?:toml)/([^'\[\]]*)''='
-    end `'=''\1\s*(?=[\[\]])'='
+    begin `'='\s*(?:toml)/([^`\[\]]*)`'='
+    end `'='`\1\s*(?=[\[\]])'='
     beginCaptures [
       0 [
         name `''string.regexp.djedat''
